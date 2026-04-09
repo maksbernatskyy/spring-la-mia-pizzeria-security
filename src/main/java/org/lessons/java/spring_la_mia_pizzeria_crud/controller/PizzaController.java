@@ -1,7 +1,6 @@
 package org.lessons.java.spring_la_mia_pizzeria_crud.controller;
 
-import java.util.List;
-import org.lessons.java.spring_la_mia_pizzeria_crud.repository.PizzaRepository;
+import org.lessons.java.spring_la_mia_pizzeria_crud.service.PizzaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,22 +19,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 @RequestMapping("/pizze")
 public class PizzaController {
 
-    // Repository
     @Autowired
-    private PizzaRepository repository;
+    private PizzaService pizzaService;
 
     // Index
     @GetMapping
     public String index(Model model) {
-        List<Pizza> result = repository.findAll();
-        model.addAttribute("list", result);
+        model.addAttribute("list", pizzaService.findAllPizzas());
         return "pizze/index";
     }
 
     // Show
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("pizza", repository.findById(id).get());
+        model.addAttribute("pizza", pizzaService.findPizzaById(id).get());
         return "pizze/show";
     }
 
@@ -52,32 +49,32 @@ public class PizzaController {
             return "pizze/create";
         }
 
-        repository.save(pizza);
-
+        pizzaService.savePizza(pizza);
         return "redirect:/pizze";
     }
 
     // Update
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id, Model model) {
-        model.addAttribute("pizza", repository.findById(id).get());
+        model.addAttribute("pizza", pizzaService.findPizzaById(id).get());
         return "pizze/edit";
     }
 
     @PostMapping("/edit/{id}")
-    public String update(@Valid @ModelAttribute("pizza") Pizza pizza, @PathVariable("id") Integer id, BindingResult bindingResult, Model model) {
+    public String update(@Valid @ModelAttribute("pizza") Pizza pizza, @PathVariable("id") Integer id,
+            BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "/pizze/edit";
         }
 
-        repository.save(pizza);
+        pizzaService.savePizza(pizza);
         return "redirect:/pizze";
     }
 
     // Delete
     @PostMapping("/delete/{id}")
     public String delete(@PathVariable("id") Integer id) {
-        repository.deleteById(id);
+        pizzaService.deletePizzaById(id);
         return "redirect:/pizze";
     }
 
