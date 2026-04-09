@@ -19,7 +19,7 @@
     <main>
 
       <div class="container">
-        <a th:href="@{/pizze/create}" class="btn btn-primary">Aggiungi un libro</a>
+        <a th:href="@{/pizze/create}" sec:authorize="hasAuthority('ADMIN')" class="btn btn-primary">Aggiungi un libro</a>
       </div>
 
 
@@ -49,8 +49,8 @@
                 <td th:text="*{fotoUrl}" />
                 <td th:text="|*{prezzo}€|" />
                 <td><a th:href="@{/pizze/{id}(id=*{id})}" class="btn btn-primary">Dettagli</a></td>
-                <td><a th:href="@{/pizze/edit/{id}(id=*{id})}" class="btn btn-secondary">Modifica</a></td>
-                <td>
+                <td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/pizze/edit/{id}(id=*{id})}" class="btn btn-secondary">Modifica</a></td>
+                <td sec:authorize="hasAuthority('ADMIN')">
                   <form action="#" th:action="@{'/pizze/delete/{id}'(id=*{id})}" method="post">
                     <button class="btn btn-danger" type="submit" id="deleteButton">Elimina</button>
                 </form>
